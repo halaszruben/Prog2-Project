@@ -31,6 +31,7 @@ public class PlayerScript : MonoBehaviour
     {
         int cardValue = deckScript.DealCard(hand[cardIndex].GetComponent<CardScript>());
 
+        //showing the cards
         hand[cardIndex].GetComponent<Renderer>().enabled = true;
 
         handValue += cardValue;
@@ -38,6 +39,7 @@ public class PlayerScript : MonoBehaviour
         {
             aceList.Add(hand[cardIndex].GetComponent<CardScript>());
         }
+        
         //AceCheck();
         cardIndex++;
 
