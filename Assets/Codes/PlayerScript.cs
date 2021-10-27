@@ -45,4 +45,31 @@ public class PlayerScript : MonoBehaviour
 
         return handValue;
     }
+
+    public void AceCheck()
+    {
+        foreach(CardScript ace in aceList)
+        {
+            if(handValue + 10 < 22 && ace.getValueOfCard() == 1)
+            {
+                ace.setValue(11);
+                handValue += 10;
+            }
+            else if(handValue > 21 && ace.getValueOfCard() == 11)
+            {
+                ace.setValue(1);
+                handValue += -10;
+            }
+        }
+    }
+
+    public void AdjustMoney(int amount)
+    {
+        money += amount;
+    }
+
+    public int GetMoney()
+    {
+        return money;
+    }
 }

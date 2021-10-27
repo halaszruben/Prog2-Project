@@ -16,6 +16,18 @@ public class GameManager : MonoBehaviour
 
     private int standClicked = 0;
 
+    public Text standButtonText;
+    
+    public Text scoreText;
+    public Text dealerScoreText;
+    public Text betText;
+    public Text moneyText;
+    //public Text mainText;
+
+    public GameObject hideCard;
+
+    int jackPot = 0;
+
     void Start()
     {
         //click listeners to the buttons:
@@ -26,9 +38,28 @@ public class GameManager : MonoBehaviour
 
     private void DealClicked()
     {
+        dealerScoreText.gameObject.SetActive(false);
+
         GameObject.Find("Deck/Table").GetComponent<DeckScript>().Shuffle();
         playerScript.StartHand();
         dealerScript.StartHand();
+
+        scoreText.text = "Hand value: " + playerScript.handValue.ToString();
+        dealerScoreText.text = "Dealer hand: " + dealerScript.handValue.ToString();
+
+        //visibility to buttons same with the text
+        dealButton.gameObject.SetActive(false);
+        hitButton.gameObject.SetActive(true);
+        standButton.gameObject.SetActive(true);
+
+        standButtonText.text = "Stand";
+
+        //the standard bet at every round
+        jackPot = 3;
+        betText.text = jackPot.ToString();
+        playerScript.AdjustMoney(-5);
+        moneyText.text = playerScript.GetMoney().ToString();
+
     }
 
     private void HitClicked()
@@ -44,7 +75,19 @@ public class GameManager : MonoBehaviour
     //if the dealer reached 17 or more the turn/hand is over
     private void StandClicked()
     {
-        
+        standClicked++;
+        if(standClicked > 1)
+            Debug.Log("End the function");
+        HitDealer();
+        standButtonText.text = "Call";   
+    }
+
+    private void HitDealer()
+    {
+        while(dealerScript.handValue < 16 && dealerScript.cardIndex < 10)
+        {
+            dealerScript.GetCard();
+        }
     }
 
 }
