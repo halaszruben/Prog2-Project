@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public Text dealerScoreText;
     public Text betText;
     public Text moneyText;
-    //public Text mainText;
+    public Text mainText;
 
     public GameObject hideCard;
 
@@ -57,8 +57,8 @@ public class GameManager : MonoBehaviour
         //the standard bet at every round
         jackPot = 3;
         betText.text = jackPot.ToString();
-        playerScript.AdjustMoney(-5);
-        moneyText.text = playerScript.GetMoney().ToString();
+        //playerScript.AdjustMoney(-3);
+        //moneyText.text = playerScript.GetMoney().ToString();
 
     }
 
@@ -87,6 +87,61 @@ public class GameManager : MonoBehaviour
         while(dealerScript.handValue < 16 && dealerScript.cardIndex < 10)
         {
             dealerScript.GetCard();
+        }
+    }
+
+    void RoundOver()
+    {
+        //checking the scores
+        bool playerBust = playerScript.handValue > 21;
+        bool dealerBust = dealerScript.handValue > 21;
+        bool player21 = playerScript.handValue == 21;
+        bool dealer21 = playerScript.handValue == 21;
+
+        //if there are no winners or busts and the stand has not been clicked twice quit the function
+        if(standClicked < 2 && !playerBust && !dealerBust && !player21 && !dealer21)
+            return;
+
+        bool roundOver = true;
+        //rule
+        //if both of them busts, we return the money and also we check every situation from here on
+        if(playerBust && dealerBust)
+        {
+            mainText.text = "All Bust, bets returned!";
+            playerScript.AdjustMoney(jackPot/2);
+        }
+        else if(playerBust || (!dealerBust && dealerScript.handValue > playerScript.handValue))
+        {
+            mainText.text = "Dealer won!";
+        }
+        else if(dealerBust || playerScript.handValue > dealerScript.handValue)
+        {
+            mainText.text = "You won!";
+            playerScript.AdjustMoney(jackPot);
+        }
+        else if(playerScript.handValue == dealerScript.handValue)
+        {
+            mainText.text = "Tie, bets returned!";
+            playerScript.AdjustMoney(jackPot/2);
+        }
+        else
+        {
+            roundOver = false;
+        }
+
+        //setting up for next turn
+        if(roundOver)
+        {
+            hitButton.gameObject.SetActive(false);
+            standButton.gameObject.SetActive(false);
+            dealButton.gameObject.SetActive(true);
+
+            mainText.gameObject.SetActive(true);
+            dealerScoreText.gameObject.SetActive(true);
+
+            hideCard.GetComponent<Renderer>().enabled = false;
+            moneyText.text = playerScript.GetMoney().ToString();
+            standClicked = 0;
         }
     }
 
