@@ -38,14 +38,21 @@ public class GameManager : MonoBehaviour
 
     private void DealClicked()
     {
+        playerScript.ResetHand();
+        dealerScript.ResetHand();
+
+        mainText.gameObject.SetActive(false);
         dealerScoreText.gameObject.SetActive(false);
 
         GameObject.Find("Deck/Table").GetComponent<DeckScript>().Shuffle();
         playerScript.StartHand();
         dealerScript.StartHand();
 
-        scoreText.text = "Hand value: " + playerScript.handValue.ToString();
+        scoreText.text = "Hand: " + playerScript.handValue.ToString();
         dealerScoreText.text = "Dealer hand: " + dealerScript.handValue.ToString();
+
+        //one of the dealers card visibility
+        hideCard.GetComponent<Renderer>().enabled = true;
 
         //visibility to buttons same with the text
         dealButton.gameObject.SetActive(false);
@@ -57,16 +64,21 @@ public class GameManager : MonoBehaviour
         //the standard bet at every round
         jackPot = 3;
         betText.text = jackPot.ToString();
-        //playerScript.AdjustMoney(-3);
-        //moneyText.text = playerScript.GetMoney().ToString();
+        playerScript.AdjustMoney(-5);
+        moneyText.text = playerScript.GetMoney().ToString();
 
     }
 
     private void HitClicked()
     {
-        if (playerScript.GetCard() < 11)
+        if (playerScript.cardIndex < 11)
         {
             playerScript.GetCard();
+
+            scoreText.text = "Hand: " + playerScript.handValue.ToString();
+
+            if(playerScript.handValue > 20)
+                RoundOver();
         }
     }
 
@@ -77,7 +89,7 @@ public class GameManager : MonoBehaviour
     {
         standClicked++;
         if(standClicked > 1)
-            Debug.Log("End the function");
+            RoundOver();
         HitDealer();
         standButtonText.text = "Call";   
     }
@@ -87,6 +99,11 @@ public class GameManager : MonoBehaviour
         while(dealerScript.handValue < 16 && dealerScript.cardIndex < 10)
         {
             dealerScript.GetCard();
+
+            dealerScoreText.text = "Dealer hand: " + dealerScript.handValue.ToString();
+
+            if(dealerScript.handValue > 20)
+                RoundOver();
         }
     }
 
@@ -143,6 +160,19 @@ public class GameManager : MonoBehaviour
             moneyText.text = playerScript.GetMoney().ToString();
             standClicked = 0;
         }
+    }
+
+    void BetClicked()
+    {
+        //it gives me the actual text of the bet button and we set it to 'Text'
+        Text newBet = betButton.GetComponentInChildren(typeof(Text)) as Text;
+        //getting rid of the $ sign
+        int intBet = int.Parse(newBet.text.ToString().Remove(0, 1));
+
+        playerScript.AdjustMoney(-intBet);
+        moneyText.text = playerScript.GetMoney().ToString();
+        jackPot += (intBet * 2);
+        betText.text = jackPot.ToString();
     }
 
 }

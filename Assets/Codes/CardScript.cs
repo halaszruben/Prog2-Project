@@ -34,6 +34,4 @@ public class CardScript : MonoBehaviour
         value = 0;
    } 
 
-
-
 }
