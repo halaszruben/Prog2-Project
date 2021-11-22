@@ -26,8 +26,7 @@ public class DeckScript : MonoBehaviour
                 num = 10;
             }
             ValueOfCard[i] = num++;
-        }
-        currentIndex = 1;  
+        }    
     }
     
     public void Shuffle()
@@ -44,6 +43,7 @@ public class DeckScript : MonoBehaviour
             ValueOfCard[i] = ValueOfCard[j];
             ValueOfCard[j] = value;
         }
+        currentIndex = 1; 
     }
 
     public int DealCard(CardScript cardScript)

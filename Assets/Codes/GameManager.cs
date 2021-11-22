@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
         dealButton.onClick.AddListener( ()=> DealClicked() );
         hitButton.onClick.AddListener( ()=> HitClicked() );
         standButton.onClick.AddListener( ()=> StandClicked() );
+        betButton.onClick.AddListener( ()=> BetClicked() );
     }
 
     private void DealClicked()
@@ -62,10 +63,10 @@ public class GameManager : MonoBehaviour
         standButtonText.text = "Stand";
 
         //the standard bet at every round
-        jackPot = 3;
-        betText.text = jackPot.ToString();
-        playerScript.AdjustMoney(-5);
-        moneyText.text = playerScript.GetMoney().ToString();
+        jackPot = 2;
+        betText.text = "Bet: " + jackPot.ToString() + "$";
+        playerScript.AdjustMoney(-2);
+        moneyText.text = playerScript.GetMoney().ToString() + "$";
 
     }
 
@@ -157,7 +158,7 @@ public class GameManager : MonoBehaviour
             dealerScoreText.gameObject.SetActive(true);
 
             hideCard.GetComponent<Renderer>().enabled = false;
-            moneyText.text = playerScript.GetMoney().ToString();
+            moneyText.text = playerScript.GetMoney().ToString() + "$";
             standClicked = 0;
         }
     }
@@ -167,12 +168,15 @@ public class GameManager : MonoBehaviour
         //it gives me the actual text of the bet button and we set it to 'Text'
         Text newBet = betButton.GetComponentInChildren(typeof(Text)) as Text;
         //getting rid of the $ sign
-        int intBet = int.Parse(newBet.text.ToString().Remove(0, 1));
+        int intBet = int.Parse(newBet.text.ToString().Remove(1, 1));
+
+        if(jackPot == 2)
+            jackPot = 4;
 
         playerScript.AdjustMoney(-intBet);
-        moneyText.text = playerScript.GetMoney().ToString();
+        moneyText.text = playerScript.GetMoney().ToString() + "$";
         jackPot += (intBet * 2);
-        betText.text = jackPot.ToString();
+        betText.text = "Bet: " + (jackPot / 2).ToString() + "$";
     }
 
 }

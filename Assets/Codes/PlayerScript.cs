@@ -11,7 +11,7 @@ public class PlayerScript : MonoBehaviour
     public DeckScript deckScript;
 
     public int handValue = 0;
-    private int money = 50;
+    private int money = 100;
 
     //the cards on the table
     public GameObject[] hand;
